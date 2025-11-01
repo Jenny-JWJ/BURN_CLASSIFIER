@@ -182,7 +182,7 @@ with rasterio.open(CLASSIFIED_TIF) as src:
 
 ---
 
-##🧪 Testing
+## 🧪 Testing
 This project uses pytest for unit testing. Test data is located in test/data/.
 
 Ensure your geop_env environment is activated.
