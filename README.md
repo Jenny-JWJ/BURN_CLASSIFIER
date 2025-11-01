@@ -85,7 +85,7 @@ The classification thresholds are based on the **USGS/MTBS (Monitoring Trends in
 | 0.100 to 0.270 | Low-Severity Burn | 4 |
 | 0.270 to 0.440 | Moderate-Severity Burn | 5 |
 | 0.440 to0.660 | High-Severity Burn | 6 |
-| 0.660> | High-Severity Burn | 7 |
+| > 0.660 | High-Severity Burn | 7 |
 
 ---
 
