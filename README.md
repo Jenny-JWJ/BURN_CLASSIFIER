@@ -1,0 +1,209 @@
+# 🔥 BURN_CLASSIFIER
+
+`BURN_CLASSIFIER` is a Python tool for analyzing and classifying wildfire burn severity from satellite imagery.
+
+It operates by calculating the **dNBR (delta Normalized Burn Ratio)** from pre-fire and post-fire **NBR (Normalized Burn Ratio)** images. This dNBR layer is then classified into distinct burn severity levels and calculated area.
+
+---
+
+## 🚀 How to Install
+
+This project relies on `conda` (specifically the `conda-forge` channel) for environment management. This is the most reliable way to install complex geospatial dependencies like `rasterio`.
+
+1.  **Clone the Repository**
+    ```bash
+    git clone [https://github.com/Jenny-JWJ/BURN_CLASSIFIER.git](https://github.com/Jenny-JWJ/BURN_CLASSIFIER.git)
+    cd BURN_CLASSIFIER
+    ```
+
+2.  **Create the Conda Environment**
+    This command uses the `environment.yml` file to create a new environment named `geop_env` and install all necessary dependencies.
+    ```bash
+    conda env create -f environment.yml
+    ```
+
+3.  **Activate the Environment**
+    ```bash
+    conda activate geop_env
+    ```
+---
+
+## 📦 Project Structure
+```
+burn_classifier/
+├── __init__.py               # Package initialization file
+├── gee_interface.py            # Source code for interfacing with Google Earth Engine
+├── local_analysis.py           # Source code for local analysis
+
+test/
+├── data/
+│     └── Malibu_pre_nbr.tif      # test data: Pre-fire NBR image
+│     └── Malibu_post_nbr.tif      # test data: Post-fire NBR image
+├── test_analysis.py            # Pytest unit test script
+
+environment.yml               # Conda environment definition file (for reproducibility)
+example.ipynb                 # Jupyter Notebook (for demonstrating usage, generating plots, classification, calculating area)
+
+.gitignore                    # Tells Git which files to ignore
+License                       # The open-source license for the project
+README.md                     # Project documentation
+```
+
+---
+
+## ⚙️ How It's Supposed to Work
+
+The core logic of this tool follows the standard methodology used by the USGS (United States Geological Survey) for assessing burn severity.
+
+1.  **Input:** The tool requires two raster GeoTIFF files:
+    * A **Pre-fire** NBR image
+    * A **Post-fire** NBR image
+
+2.  **Calculate dNBR:**
+    The program calculates the **dNBR (delta NBR)**, or the difference in NBR.
+    > dNBR = (Pre-fire NBR) - (Post-fire NBR)
+    > *(Note: dNBR values are often scaled by 1000 to work with integers)*
+
+3.  **Classification:**
+    Finally, the program classifies the dNBR values into different severity categories.
+
+## 📊 Classification Standard
+
+The classification thresholds are based on the **USGS/MTBS (Monitoring Trends in Burn Severity)** standard. Your `local_analysis.py` module should implement similar logic.
+
+**Note:** The **raster values** (e.g., 1, 2, 3...) used in your code must map to these categories.
+
+| dNBR Range (scaled by 1000) | Severity Level | Suggested Raster Value |
+| :--- | :--- | :--- |
+| < -100 | Enhanced Regrowth | (e.g., -1) |
+| -100 to 99 | Unburned | 1 |
+| 100 to 269 | Low Severity | 2 |
+| 270 to 439 | Moderate Severity | 3 |
+| 440 to 1300 | High Severity | 4 |
+| > 1300 | (Often also High) | 4 |
+
+---
+
+## 💡 Examples
+
+The best way to start is by exploring `example.ipynb`. Below is the core example code from that notebook, demonstrating how to run the analysis, plot the classified map, and calculate the area for each class.
+
+```python
+# Import required libraries
+import rasterio
+import numpy as np
+import matplotlib.pyplot as plt
+from rasterio.plot import show
+
+# --- 1. Define Constants ---
+
+# Path to the classified raster
+CLASSIFIED_TIF = "Malibu_classified_local.tif" # Assumes this file exists
+
+# Define the classification map
+# This MUST match the logic in your local_analysis.py!
+# The 'value' is the pixel value in the raster file.
+CLASS_MAP = {
+    1: {"name": "Unburned", "color": "green"},
+    2: {"name": "Low Severity", "color": "yellow"},
+    3: {"name": "Moderate Severity", "color": "orange"},
+    4: {"name": "High Severity", "color": "red"}
+    # (Add 'No Data' or 'Enhanced Regrowth' as needed)
+}
+
+# --- 2. Plot the Classified Map ---
+
+print(f"--- 1. Plotting Map: {CLASSIFIED_TIF} ---")
+
+with rasterio.open(CLASSIFIED_TIF) as src:
+    # Create a custom colormap for accurate visualization
+    from matplotlib.colors import ListedColormap
+    
+    # Extract colors and corresponding raster values
+    colors = [info["color"] for info in CLASS_MAP.values()]
+    values = list(CLASS_MAP.keys())
+    
+    cmap = ListedColormap(colors)
+    norm = plt.Normalize(min(values), max(values))
+
+    # Plot the map
+    fig, ax = plt.subplots(figsize=(10, 10))
+    show(src, ax=ax, cmap=cmap, norm=norm, title="Malibu Burn Severity")
+    
+    # Add a legend
+    patches = [plt.Rectangle((0,0),1,1, color=c, label=CLASS_MAP[v]["name"]) 
+               for v, c in zip(values, colors)]
+    ax.legend(handles=patches, loc='lower right', borderaxespad=0.)
+    
+    plt.show()
+
+# --- 3. Calculate Area for Each Class ---
+
+print(f"\n--- 2. Calculating Areas: {CLASSIFIED_TIF} ---")
+
+with rasterio.open(CLASSIFIED_TIF) as src:
+    # 1. Get pixel size (resolution)
+    # Assumes the CRS is projected (e.g., UTM) in meters
+    transform = src.transform
+    pixel_width = transform[0]
+    pixel_height = -transform[4] # y-resolution is negative in Affine transform
+    pixel_area_m2 = pixel_width * pixel_height
+    
+    # 2. Read the raster data into a NumPy array
+    data = src.read(1)
+    
+    # 3. Get counts for each unique value (class)
+    unique_values, pixel_counts = np.unique(data, return_counts=True)
+    
+    # --- Print Area Report ---
+    print("\n--- Burn Severity Area Report ---")
+    print(f"Coordinate Reference System (CRS): {src.crs}")
+    print(f"Pixel Area (m²): {pixel_area_m2:.2f}\n")
+    print("Value | Class Name          | Pixel Count  | Area (Hectares)")
+    print("-" * 65)
+    
+    total_area_ha = 0
+    for value, count in zip(unique_values, pixel_counts):
+        if value in CLASS_MAP:
+            class_name = CLASS_MAP[value]["name"]
+            
+            # 4. Calculate area (convert from m² to hectares)
+            area_m2 = count * pixel_area_m2
+            area_ha = area_m2 / 10000.0 # 1 Hectare = 10,000 m²
+            
+            print(f"{value:<5} | {class_name:<17} | {count:<12} | {area_ha:>15.2f}")
+            total_area_ha += area_ha
+        else:
+            print(f"{value:<5} | (Unmapped Value)    | {count:<12} | -")
+
+    print("-" * 65)
+    print(f"Total Classified Area (Hectares): {total_area_ha:>30.2f}")
+```
+
+---
+
+##🧪 Testing
+This project uses pytest for unit testing. Test data is located in test/data/.
+
+Ensure your geop_env environment is activated.
+
+1.  **From the project's root directory (BURN_CLASSIFIER/), run:y**
+    ```bash
+    pytest
+    ```
+pytest will automatically discover and run all tests in the test/ directory.
+
+---
+
+## License
+
+burn_classifier is licensed under the [MIT License](LICENSE). This means:
+
+- **Permission is Granted to:**
+- Use the software for personal, academic, or commercial purposes.
+- Modify and distribute the code under the same license.
+
+- **Limitations:**
+- The software is provided "as is," without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
+
+For the full license text, see the `LICENSE` file in the repository.
