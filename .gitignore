@@ -1,2 +1,4 @@
 # 忽略 Jupyter 自动保存文件夹
 .ipynb_checkpoints/
+# 忽略所有在根目录的 .tif 输出文件
+/*.tif
