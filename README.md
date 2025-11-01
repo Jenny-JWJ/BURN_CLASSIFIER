@@ -73,18 +73,19 @@ The core logic of this tool follows the standard methodology used by the USGS (U
 
 ## 📊 Classification Standard
 
-The classification thresholds are based on the **USGS/MTBS (Monitoring Trends in Burn Severity)** standard. Your `local_analysis.py` module should implement similar logic.
+The classification thresholds are based on the **USGS/MTBS (Monitoring Trends in Burn Severity)** standard. `local_analysis.py` module should implement similar logic.
 
-**Note:** The **raster values** (e.g., 1, 2, 3...) used in your code must map to these categories.
+**Note:** The **raster values** (e.g., 1, 2, 3...) used in code must map to these categories.
 
-| dNBR Range (scaled by 1000) | Severity Level | Suggested Raster Value |
+| dNBR Range | Severity Level | Class |
 | :--- | :--- | :--- |
-| < -100 | Enhanced Regrowth | (e.g., -1) |
-| -100 to 99 | Unburned | 1 |
-| 100 to 269 | Low Severity | 2 |
-| 270 to 439 | Moderate Severity | 3 |
-| 440 to 1300 | High Severity | 4 |
-| > 1300 | (Often also High) | 4 |
+| <= -0.251 | Enhanced Regrowth, High | 1 |
+| -0.251 to -0.101 | Enhanced Regrowth, Moderate | 2 |
+| -0.101 to 0.100 | Unburned | 3 |
+| 0.100 to 0.270 | Low-Severity Burn | 4 |
+| 0.270 to 0.440 | Moderate-Severity Burn | 5 |
+| 0.440 to0.660 | High-Severity Burn | 6 |
+| 0.660> | High-Severity Burn | 7 |
 
 ---
 
