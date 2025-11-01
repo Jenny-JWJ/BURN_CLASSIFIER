@@ -1,6 +1,6 @@
 # 🔥 BURN_CLASSIFIER
 
-`BURN_CLASSIFIER` is a Python tool for analyzing and classifying wildfire burn severity from satellite imagery.
+`BURN_CLASSIFIER` is a Python library for analyzing and classifying wildfire burn severity from satellite imagery.
 
 It operates by calculating the **dNBR (delta Normalized Burn Ratio)** from pre-fire and post-fire **NBR (Normalized Burn Ratio)** images. This dNBR layer is then classified into distinct burn severity levels and calculated area.
 
