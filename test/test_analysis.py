@@ -6,14 +6,16 @@ import burn_classifier as bc
 import rasterio
 
 # --- Test Settings ---
-# Define the path to the "golden standard" test data
-TEST_DATA_DIR = "test/data"
+# Define the path to the test data
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEST_DATA_DIR = os.path.join(BASE_DIR, "data")
+
 PRE_TIF = os.path.join(TEST_DATA_DIR, "Malibu_pre_nbr.tif")
 POST_TIF = os.path.join(TEST_DATA_DIR, "Malibu_post_nbr.tif")
 
 # Define paths for output files generated during testing
-OUTPUT_DNBR = "test/data/test_dnbr_output.tif"
-OUTPUT_CLASSIFIED = "test/data/test_classified_output.tif"
+OUTPUT_DNBR = os.path.join(TEST_DATA_DIR, "test_dnbr_output.tif")
+OUTPUT_CLASSIFIED = os.path.join(TEST_DATA_DIR, "test_classified_output.tif")
 
 
 # --- Unit Tests ---
