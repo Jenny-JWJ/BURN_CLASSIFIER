@@ -12,7 +12,7 @@ This project relies on `conda` (specifically the `conda-forge` channel) for envi
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/Jenny-JWJ/BURN_CLASSIFIER.git](https://github.com/Jenny-JWJ/BURN_CLASSIFIER.git)
+    git clone https://github.com/Jenny-JWJ/BURN_CLASSIFIER.git
     cd BURN_CLASSIFIER
     ```
 
