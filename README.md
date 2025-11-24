@@ -200,6 +200,8 @@ Ensure your geop_env environment is activated.
     ```
 pytest will automatically discover and run all tests in the test/ directory.
 
+2.  **Or you can go to the test directory, run test_analysis.py**
+
 ---
 
 ## License
