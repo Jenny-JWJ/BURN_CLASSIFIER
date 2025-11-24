@@ -26,6 +26,8 @@ This project relies on `conda` (remember to install it) for environment manageme
     ```bash
     conda activate geop_env
     ```
+
+4.  **Run example.ipynb and test_analysis.py**
 ---
 
 ## 📦 Project Structure
