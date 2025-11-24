@@ -194,7 +194,7 @@ This project uses pytest for unit testing. Test data is located in test/data/.
 
 Ensure your geop_env environment is activated.
 
-1.  **From the project's root directory (BURN_CLASSIFIER/), run:y**
+1.  **From the project's root directory (BURN_CLASSIFIER/), run:**
     ```bash
     pytest
     ```
