@@ -8,7 +8,7 @@ It operates by calculating the **dNBR (delta Normalized Burn Ratio)** from pre-f
 
 ## 🚀 How to Install
 
-This project relies on `conda` (specifically the `conda-forge` channel) for environment management. This is the most reliable way to install complex geospatial dependencies like `rasterio`.
+This project relies on `conda` (remember to install it) for environment management. This is the most reliable way to install complex geospatial dependencies like `rasterio`.
 
 1.  **Clone the Repository**
     ```bash
