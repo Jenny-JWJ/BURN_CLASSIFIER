@@ -89,11 +89,15 @@ The classification thresholds are based on the **USGS/MTBS (Monitoring Trends in
 | 0.440 to0.660 | High-Severity Burn | 6 |
 | > 0.660 | High-Severity Burn | 7 |
 
+Below is a example picture for the burn severity classification:
+<img width="1311" height="631" alt="burn" src="https://github.com/user-attachments/assets/d5c5ac2c-ea40-4276-9c9a-f226814f11c6" />
+
+
 ---
 
 ## 💡 Examples
 
-The best way to start is by exploring `example.ipynb`. Below is the core example code from that notebook, demonstrating how to run the analysis, plot the classified map, and calculate the area for each class.
+The best way to start is by exploring `example.ipynb`. Below is the part core function code from library, demonstrating how to run the analysis, plot the classified map, and calculate the area for each class.
 
 ```python
 # Import required libraries
